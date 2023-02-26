@@ -6,86 +6,115 @@ accomplish the specifications provided, and would optimize it if I had more time
 ********************************************************************************************************************/
 import java.util.*;
 import java.io.*;
+import java.security.*;
+import java.lang.*;
 
 public class simplecracker
 {
-
-	public static void main(String[] argv)
-	{
-	//iterate through the arv array to assign password and dictionary files
-	for(int i = 0; i < args.length; i++)
-	{
-		/************************************************
-		*	parse through args							*
-		*	--dict-file = dictionary file				*
-		*	--pw-file = password file to compary		*
-		************************************************/
-	if argv[i].equals("--dict-file")
-		{
-		File dictionaryFile = new File(argv[i+1]);
-		}
-		
-	if argv[i].equals("--pw-file")
-		{
-			File passwordFile = new File(argv[i+1]);
-		}
-	}
-	
 	//create scanners
 	Scanner dictionaryFileReader = new Scanner(dictionaryFile);
 	Scanner passwordFileReader = new Scanner(passwordFile);
 
-	// create stringbuffer to split the usernames, salt, and hashed passwords.
-	StringBuffer tempPasswordHolder				= new StringBuffer(128);
-	
 	// create linked lists in order to walk through the comparisons later on.
 	LinkedList<String> userNamesLinkedList		= new LinkedList<String>();
 	LinkedList<String> saltLinkedList			= new LinkedList<String>();
 	LinkedList<String> passwordLinkedList		= new LinkedList<String>();
 	LinkedList<String> dctionaryLinkedList		= new LinkedList<String>();
 	StringBuilder[] splitString					= new StringBuilder<3>();
+
+	// create stringbuffer to split the usernames, salt, and hashed passwords.
+	StringBuilder tempPasswordHolder			= new StringBuffer(128);
 	
+	// create StringBuilder object to compare hashed password and dictionary
+	StringBuilder comparisonString				= new StringBuilder;
+	
+	// placeholders for nested loop, reset inner loop at end of outer loop function.
+	int dictionaryIterator						= 0;
+	int passwordIterator						= 0;
+
+	// create MD5 objects for testing
+	MessageDigest messageDigestObject = MessageDigest.getInstance("MD5");
+
+	public static void main(String[] argv)
+	{
+	if (args,length != 4)
+	{
+		howToUse();
+	}
+	//iterate through the arv array to assign password and dictionary files
+	for(int i = 0; i < args.length; i++)
+		{
+			/************************************************
+			*	parse through args							*
+			*	--dict-file = dictionary file				*
+			*	--pw-file = password file to compary		*
+			************************************************/
+			if args[i].equals("--dict-file")
+			{
+			File dictionaryFile					= new File(argv[i+1]);
+			}
+		
+			if args[i].equals("--pw-file")
+			{
+			File passwordFile					= new File(argv[i+1]);
+			}
+		}
+		
 	// read through files, insert into arrays, and close file scanners
 	while (dictionaryFileReader.hasNextLine())
-	{
-		dctionaryLinkedList.add( dictionaryFileReader.nextLine() ) )
-    }
+		{
+			dctionaryLinkedList.add( dictionaryFileReader.nextLine() ) )
+		}
 	dictionaryFileReader.close();
-	
+		
 	while (passwordFileReader.hasNextLine())
-	{
-		tempPasswordHolder = passwordFileReader.nextLine();
-		userNamesLinkedList.add();
-		saltLinkedList.add();
-		passwordLinkedList.add();
-    }
+		{
+			tempPasswordHolder					= passwordFileReader.nextLine();
+			userNamesLinkedList.add();
+			saltLinkedList.add();
+			passwordLinkedList.add();
+		}
 	passwordFileReader.close();
+
+	// iterate through dictionary file array
+	for (dictionaryIterator; dictionaryIterator < dctionaryLinkedList.size(); dictionaryIterator++)
+		{
+		// iterate through password file array
+		for (passwordIterator; passwordIterator < passwordLinkedList.size(); passwordIterator++)
+			{
+				// concatenate the password in dictionary list and the salt in the password list
+				splitString	 = passwordLinkedList[ passwordIterator ].split();
+				tempPasswordHolder = splitString[1] + dctionaryLinkedList[ dictionaryIterator ];
+				
+				// hash tempPasswordHolder MD style
+				byte[] messageDigestObject = md.digest(tempPasswordHolder.getBytes());
+				
+				// Turn array into string.
+				comparisonString = toHex(messageDigestObject);
+				
+				// compare tempPasswordHolder to splitString[0]
+				if ( comparisonString.toString().equals( splitString[0].toString() ) )
+				{
+					System.out.println("Password match found! Username is: " + userNamesLinkedList[passwordIterator] + " and password is: " + dctionaryLinkedList[dictionaryIterator] + ".");
+				}
+			}
+		passwordIterator = 0;
+		}
+		
 	}
 	
-	// iterate through dictionary file array
-	for (int i = 0; i < dctionaryLinkedList.size(); i++)
-	{
-    	// iterate through password file array
-		for (int i = 0; i < passwordLinkedList.size(); i++)
-		{
-			// concatenate the password in dictionary list and the salt in the password list
-			// 
-		}
+	public static void howToUse()
+	{ 
+		System.out.println("Please note: To use this coomand line program, it has to be run with 4 arguements from the command line.");
+		System.out.println("The argument --dict-file is used to identify the dictionary file being used to compare a user's salt'ed and hashed password,");
+		System.out.println("And is followed by the name of the dictionary file.");
+		System.out.println("The argument --passwordFileReader is used to identify the file containing the user names, salt, and hashed salt+pass word, being seperated by a colon (:).");
+		System.out.println("And is followed by the name of the password file.");
+	}
+	public static String toHex(byte[] bytes) 
+	{ 
+		BigInteger bi = new BigInteger(1, bytes); 
+		return String.format("%0" + (bytes.length << 1) + "X", bi); 
 	}
 	
 }
-
-/*
-
-User name	Salt		hash of password and salt?
-user0		:qtoUil1J	:3DACEF3B08BDAEFF0F9402FAB9270F67
-user1		:LqVLX/PV	:6A3DFBD5580F3A5A421CB37F4D4B7725
-user2		:Ckf4mO9I	:61C42F5C40F727B657CC8402359E4A17
-user3		:x62ZrMwu	:0174A2A91EA1881A5BC582AEF37E6F35
-user4		:2VF0AblA	:D08C5912FB8E6B0A9530C5FDDACA734D
-user5		:CEhrE/C7	:6D48564E27D9B4626A3ADBA5F369B0F3
-user6		:cWGoHf89	:A4EBD768B02F3418FEF93DCD152A9F85
-user7		:tqKaVL4O	:7F8032B62525D9FAF339CE4128579566
-user8		:T7cTnZz0	:4AFB9E06F08F664F367F5E2244666FC0
-user9		:60O7QHXH	:92AC0B3C76BD44C8768355FB0349AA19
-*/
