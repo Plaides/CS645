@@ -33,6 +33,7 @@ public class cracker
 	// placeholders for nested loop, reset inner loop at end of outer loop function.
 	int dictionaryIterator						= 0;
 	int passwordIterator						= 0;
+	int saltLinkedListIterator					= 0;
 	
 	// create object for MD5 Shadow crypt function.
 	MD5Shadow shadowCryptObject					= new MD5Shadow();
@@ -88,38 +89,18 @@ public class cracker
 			}
 		passwordFileReader.close()
 		
-		
+		for (dictionaryIterator; dictionaryIterator < dctionaryLinkedList.size(); dictionaryIterator++)
+		{
+			for (passwordIterator; passwordIterator < passwordLinkedList.size(); passwordIterator++)
+			{
+				// linkedList.get(saltLinkedListIterator)
+				tempPasswordHolder = crypt(dctionaryLinkedList[dictionaryIterator], saltLinkedList.get(saltLinkedListIterator) );
+				if ( tempPasswordHolder.equals( passwordLinkedList.get(saltLinkedListIterator) ) )
+					{
+						System.out.println("Password match found! Username is: " + userNamesLinkedList[passwordIterator] + " and password is: " + dctionaryLinkedList[dictionaryIterator] + ".");
+					}
+			}
+		passwordIterator = 0;
+		saltLinkedListIterator++;
+		}
 	}
-	
-	public static void howToUse()
-	{ 
-		System.out.println("Please note: To use this coomand line program, it has to be run with 4 arguements from the command line.");
-		System.out.println("The argument --dict-file is used to identify the dictionary file being used to compare a user's salt'ed and hashed password,");
-		System.out.println("And is followed by the name of the dictionary file.");
-		System.out.println("The argument --passwordFileReader is used to identify the file containing the user names, salt, and hashed salt+pass word, being seperated by a colon (:).");
-		System.out.println("And is followed by the name of the password file.");
-	}
-		
-	public static String toHex(byte[] bytes) 
-	{ 
-		BigInteger bi = new BigInteger(1, bytes); 
-		return String.format("%0" + (bytes.length << 1) + "X", bi); 
-	}
-}
-
-/*******************************************************************************************
-public static String[] getSaltAndHash(String saltedHash)									*
-	{																						*
-		string deliminator						= new String();								*
-		deliminator								= "$";										*
-		String[] slicedString					= saltedHash.split(deliminator);			*
-		return slicedString;																*
-	}																						*
-	public static String[] lineDissection(String lineToDissect);							*
-	{																						*
-		String deliminator						= new String(":");							*
-		String[] sliced							= new String[];								*
-		sliced									= lineToDissect.split(deliminator);			*
-		return sliced;																		*
-	}																						*
-********************************************************************************************/
