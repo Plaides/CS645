@@ -11,23 +11,22 @@ import java.lang.*;
 
 public class simplecracker
 {
-	//create scanners
-	Scanner dictionaryFileReader = new Scanner(dictionaryFile);
-	Scanner passwordFileReader = new Scanner(passwordFile);
-
+	File dictionaryFile							= new File();
+	File passwordFile							= new File();
+	
 	// create linked lists in order to walk through the comparisons later on.
 	LinkedList<String>	userNamesLinkedList		= new LinkedList<String>();
 	LinkedList<String>	saltLinkedList			= new LinkedList<String>();
 	LinkedList<String>	passwordLinkedList		= new LinkedList<String>();
 	LinkedList<String>	dctionaryLinkedList		= new LinkedList<String>();
-	StringBuilder[]		splitString				= new StringBuilder<3>();
-	String[] 			slicedPWfile			= new String[];
+	String[]			splitString				= new String[3];
+	String[] 			slicedPWfile			= new String[128];
 
 	// create stringbuffer to split the usernames, salt, and hashed passwords.
-	StringBuilder tempPasswordHolder			= new StringBuffer(128);
+	String tempPasswordHolder					= new String(128);
 	
 	// create StringBuilder object to compare hashed password and dictionary
-	StringBuilder comparisonString				= new StringBuilder;
+	String comparisonString						= new String();
 	
 	// placeholders for nested loop, reset inner loop at end of outer loop function.
 	int dictionaryIterator						= 0;
@@ -38,33 +37,36 @@ public class simplecracker
 
 	public static void main(String[] argv)
 	{
-	if (args,length != 4)
+	if (argv.length != 4)
 	{
 		howToUse();
 	}
 	//iterate through the arv array to assign password and dictionary files
-	for(int i = 0; i < args.length; i++)
+	for(int i = 0; i < argv.length; i++)
 		{
 			/************************************************
-			*	parse through args							*
+			*	parse through argv							*
 			*	--dict-file = dictionary file				*
 			*	--pw-file = password file to compary		*
 			************************************************/
-			if args[i].equals("--dict-file")
+			if ( argv[i].equals("--dict-file") )
 			{
-			File dictionaryFile					= new File(argv[i+1]);
+			 dictionaryFile					= argv[i+1];
 			}
 		
-			if args[i].equals("--pw-file")
+			if ( argv[i].equals("--pw-file") )
 			{
-			File passwordFile					= new File(argv[i+1]);
+			passwordFile					= argv[i+1];
 			}
 		}
-		
+	//create scanners
+	Scanner dictionaryFileReader = new Scanner(dictionaryFile);
+	Scanner passwordFileReader = new Scanner(passwordFile);
+	
 	// read through files, insert into arrays, and close file scanners
 	while (dictionaryFileReader.hasNextLine())
 		{
-			dctionaryLinkedList.add( dictionaryFileReader.nextLine() ) )
+			dctionaryLinkedList.add( dictionaryFileReader.nextLine() );
 		}
 	dictionaryFileReader.close();
 		
@@ -73,7 +75,7 @@ public class simplecracker
 			tempPasswordHolder					= passwordFileReader.nextLine();
 			// user9:60O7QHXH:92AC0B3C76BD44C8768355FB0349AA19
 			
-			String[] passwordArrayStrings		= new String[];
+			String[] passwordArrayStrings		= new String(4096);
 			passwordArrayStrings				= lineDissection(tempPasswordHolder);
 			userNamesLinkedList.add( lineDissection[1] );
 			saltLinkedList.add( lineDissection[2] );
@@ -82,10 +84,10 @@ public class simplecracker
 	passwordFileReader.close();
 
 	// iterate through dictionary file array
-	for (dictionaryIterator; dictionaryIterator < dctionaryLinkedList.size(); dictionaryIterator++)
+	for (dictionaryIterator = 0; dictionaryIterator < dctionaryLinkedList.size(); dictionaryIterator++)
 		{
 		// iterate through password file array
-		for (passwordIterator; passwordIterator < passwordLinkedList.size(); passwordIterator++)
+		for (passwordIterator = 0; passwordIterator < passwordLinkedList.size(); passwordIterator++)
 			{
 				// concatenate the password in dictionary list and the salt in the password list
 				splitString	 = passwordLinkedList[ passwordIterator ].split();
@@ -119,9 +121,9 @@ public class simplecracker
 	
 	public static String[] lineDissection(String lineToDissect);
 	{
-		String deliminator		= new String(":");
-		String[] sliced			= new String[];
-		sliced					= lineToDissect.split(deliminator);
+		String deliminator			= new String(":");
+		String[] sliced				= new String[32];
+		sliced						= lineToDissect.split(deliminator);
 		return sliced;
 	}
 	
@@ -132,6 +134,3 @@ public class simplecracker
 	}
 	
 }
-/*
-
-*/
