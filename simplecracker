@@ -16,11 +16,12 @@ public class simplecracker
 	Scanner passwordFileReader = new Scanner(passwordFile);
 
 	// create linked lists in order to walk through the comparisons later on.
-	LinkedList<String> userNamesLinkedList		= new LinkedList<String>();
-	LinkedList<String> saltLinkedList			= new LinkedList<String>();
-	LinkedList<String> passwordLinkedList		= new LinkedList<String>();
-	LinkedList<String> dctionaryLinkedList		= new LinkedList<String>();
-	StringBuilder[] splitString					= new StringBuilder<3>();
+	LinkedList<String>	userNamesLinkedList		= new LinkedList<String>();
+	LinkedList<String>	saltLinkedList			= new LinkedList<String>();
+	LinkedList<String>	passwordLinkedList		= new LinkedList<String>();
+	LinkedList<String>	dctionaryLinkedList		= new LinkedList<String>();
+	StringBuilder[]		splitString				= new StringBuilder<3>();
+	String[] 			slicedPWfile			= new String[];
 
 	// create stringbuffer to split the usernames, salt, and hashed passwords.
 	StringBuilder tempPasswordHolder			= new StringBuffer(128);
@@ -70,9 +71,13 @@ public class simplecracker
 	while (passwordFileReader.hasNextLine())
 		{
 			tempPasswordHolder					= passwordFileReader.nextLine();
-			userNamesLinkedList.add();
-			saltLinkedList.add();
-			passwordLinkedList.add();
+			// user9:60O7QHXH:92AC0B3C76BD44C8768355FB0349AA19
+			
+			String[] passwordArrayStrings		= new String[];
+			passwordArrayStrings				= lineDissection(tempPasswordHolder);
+			userNamesLinkedList.add( lineDissection[1] );
+			saltLinkedList.add( lineDissection[2] );
+			passwordLinkedList.add( lineDissection[3] );
 		}
 	passwordFileReader.close();
 
@@ -111,6 +116,15 @@ public class simplecracker
 		System.out.println("The argument --passwordFileReader is used to identify the file containing the user names, salt, and hashed salt+pass word, being seperated by a colon (:).");
 		System.out.println("And is followed by the name of the password file.");
 	}
+	
+	public static String[] lineDissection(String lineToDissect);
+	{
+		String deliminator		= new String(":");
+		String[] sliced			= new String[];
+		sliced					= lineToDissect.split(deliminator);
+		return sliced;
+	}
+	
 	public static String toHex(byte[] bytes) 
 	{ 
 		BigInteger bi = new BigInteger(1, bytes); 
@@ -118,3 +132,6 @@ public class simplecracker
 	}
 	
 }
+/*
+
+*/
